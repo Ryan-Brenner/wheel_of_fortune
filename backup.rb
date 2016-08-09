@@ -6,23 +6,20 @@ class WheelOfFortune
     @phrase = params[:phrase] || ""
     @remaining_characters = remaining_characters
     @guesses = []
-    @phrase_as_arr = @phrase.split(//).map(&:downcase).join("").split(//)
-    @correct = @phrase.split(//)
-    @final_phrase = @phrase.split(//).map(&:downcase).join("").gsub(/[a-zA-Z]/, "_").split(//)
+    @correct = []
+    @phrase_as_arr = @phrase.split(//).map(&:downcase)
+    @final_phrase = @phrase.split(//).map(&:downcase).join("").gsub(/[a-zA-Z]/, "_").split("")
     end
 
   def to_s
-  if @guesses[-1] != nil
-  if remaining_characters.include? @guesses[-1]
-    let_ind = @phrase_as_arr.find_index(@guesses[-1])
-    @final_phrase[let_ind] = @correct[let_ind]
+  
+  if(remaining_characters.include? @guesses[-1])
+    let_ind = @phrase_as_arr.find_index(@correct[-1])
+    @final_phrase[let_ind] == @phrase[let_ind]
+    remaining_characters[remaining_characters.find_index(@correct[-1])] = " "
    end
-   end
-  if game_over? == true
-    @phrase
-  else
-   @final_phrase = @final_phrase.join("")
- end
+  
+   @final_phrase = @final_phrase.join('')
 
 
   
@@ -51,11 +48,12 @@ class WheelOfFortune
   end
 
   def game_over?
-    if @remaining_characters.length == 0
-      true
-    else
+    if @final_phrase.include?("_")
       false
+    else
+      true
 
+   
     end
   end
 end
@@ -69,11 +67,12 @@ def parse_phrase()
 end
 
 def in_phrase?(input)
-  @guesses << input unless input.empty?
-    if  @remaining_characters.include?(input)
-        @remaining_characters.delete(input)
+    if  remaining_characters.include?(input)
+      @guesses << input
+      @correct << input
       true
     else 
+      @guesses << input
       false
     end
 end
